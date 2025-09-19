@@ -15,6 +15,9 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -39,13 +42,27 @@ public class ReservationServiceImpl implements ReservationService {
         Room room = roomRepository.findById(requestDto.getRoomId())
                 .orElseThrow(() -> new RuntimeException("해당하는 회의실이 없습니다."));
 
-        Reservation reservation = Reservation.builder()
-                .user(user)
-                .room(room)
-                .startAt(requestDto.getStartAt())
-                .endAt(requestDto.getEndAt())
-                .build();
-        reservationRepository.save(reservation);
+        // 시간대 지정
+        ZonedDateTime startZoned = requestDto.getStartAt().atZone(ZoneId.of("Asia/Seoul"));
+        ZonedDateTime endZoned = requestDto.getEndAt().atZone(ZoneId.of("Asia/Seoul"));
+
+        if (startZoned.equals(endZoned)){
+            throw new RuntimeException("시작 시간과 끝 시간이 같습니다.");
+        }
+
+        // tstzrange 포맷에 맞춰서 저장
+        String timeRange = String.format("[%s, %s)",
+                startZoned.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME),
+                endZoned.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME)
+        );
+
+        reservationRepository.saveReservationWithRange(
+                user.getId(),
+                room.getId(),
+                requestDto.getStartAt(),
+                requestDto.getEndAt(),
+                timeRange
+        );
         System.out.println("ok");
     }
 

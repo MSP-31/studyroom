@@ -18,6 +18,11 @@ public class RoomServiceImpl implements RoomService {
     @Secured("ROLE_ADMIN")
     @Override
     public void createRoom(RoomRequestDto roomRequestDto) {
+
+        if (roomRequestDto.getCapacity() <= 0) {
+            throw new RuntimeException("수용 인원은 0보다 커야 합니다.");
+        }
+
         Room room = Room.builder()
                 .roomName(roomRequestDto.getRoomName())
                 .location(roomRequestDto.getLocation())
