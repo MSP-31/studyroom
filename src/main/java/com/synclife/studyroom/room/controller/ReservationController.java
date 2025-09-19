@@ -3,15 +3,21 @@ package com.synclife.studyroom.room.controller;
 import com.synclife.studyroom.common.dto.ResponseDto;
 import com.synclife.studyroom.room.dto.ReservationRequestDto;
 import com.synclife.studyroom.room.dto.RoomRequestDto;
+import com.synclife.studyroom.room.dto.RoomResponseDto;
 import com.synclife.studyroom.room.service.ReservationService;
 import com.synclife.studyroom.room.service.RoomService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.time.LocalDate;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor

@@ -22,8 +22,8 @@ public class Room {
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
-    @Column(nullable = false)
-    private String roomname;
+    @Column(name = "room_name)", nullable = false)
+    private String roomName;
 
     @Column(nullable = false)
     private String location;
@@ -32,8 +32,8 @@ public class Room {
     private Long capacity;
 
     @Builder
-    public Room(String roomname, String location, Long capacity){
-        this.roomname = roomname;
+    public Room(String roomName, String location, Long capacity){
+        this.roomName = roomName;
         this.location = location;
         this.capacity = capacity;
     }

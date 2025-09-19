@@ -5,7 +5,9 @@ import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-public class RoomRequestDto {
+public class  RoomResponseDto {
+    private final Long id;
+
     private final String roomName;
 
     private final String location;

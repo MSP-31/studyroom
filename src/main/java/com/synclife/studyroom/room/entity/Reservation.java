@@ -33,18 +33,18 @@ public class Reservation {
     @JoinColumn(name = "rooms_id", nullable = false)
     private Room room;
 
-    @Column(nullable = false)
-    private LocalDateTime start_at;
+    @Column(name = "start_at", nullable = false)
+    private LocalDateTime startAt;
 
-    @Column(nullable = false)
-    private LocalDateTime end_at;
+    @Column(name = "end_at", nullable = false)
+    private LocalDateTime endAt;
 
     @Builder
-    public Reservation(User user, Room room, LocalDateTime start_at, LocalDateTime end_at){
+    public Reservation(User user, Room room, LocalDateTime startAt, LocalDateTime endAt){
         this.id = new ReservationId(user.getId(),room.getId());
         this.user = user;
         this.room = room;
-        this.start_at = start_at;
-        this.end_at = end_at;
+        this.startAt = startAt;
+        this.endAt = endAt;
     }
 }
