@@ -18,18 +18,21 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
     private final JwtAuthFilter jwtAuthFilter;
 
+    private static final String[] AUTH_WHITELIST = {
+            "/api-docs/swagger-config",
+            "/swagger-ui.html",
+            "/v3/api-docs/**",
+            "/swagger-ui/**",
+            "/api-docs",
+            "/user/signup"
+    };
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(
-                                "/v3/api-docs/**",         // OpenAPI 문서
-                                "/swagger-ui/**",          // Swagger UI 리소스
-                                "/swagger-ui.html",        // Swagger UI 진입점
-                                "/swagger-resources/**",   // Swagger 리소스
-                                "/webjars/**"              // Swagger 관련 static 리소스)
-                        ).permitAll()
+                        .requestMatchers(AUTH_WHITELIST).permitAll()
                         .anyRequest().authenticated()
                 ).addFilterBefore(
                         jwtAuthFilter,
