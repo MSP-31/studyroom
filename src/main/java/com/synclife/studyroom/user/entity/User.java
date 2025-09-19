@@ -1,6 +1,5 @@
 package com.synclife.studyroom.user.entity;
 
-import com.synclife.studyroom.common.entity.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -17,7 +16,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @Entity
 @Table(name = "users")
-public class User extends BaseEntity {
+public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
@@ -26,19 +25,15 @@ public class User extends BaseEntity {
     private String username;
 
     @Column(nullable = false)
-    private String email;
-
-    @Column(nullable = false)
     private String password;
 
     @Column(nullable = false)
     private UserRoleType role;
 
     @Builder
-    public User(String username, String email, String password) {
+    public User(String username, String password, UserRoleType role) {
         this.username = username;
-        this.email = email;
         this.password = password;
-        this.role = UserRoleType.ROLE_USER;
+        this.role = role;
     }
 }
