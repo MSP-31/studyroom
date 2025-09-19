@@ -59,4 +59,8 @@ public class JwtService {
     public String getUsername(String token) {
         return getClaims(token).getSubject();
     }
+
+    public String getUserRole(String token){
+        return getClaims(token).getSubject();
+    }
 }

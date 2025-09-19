@@ -70,6 +70,4 @@ public class JwtTokenProvider {
     public String getUsername(String token) {
         return jwtService.getUsername(token);
     }
-
-
 }

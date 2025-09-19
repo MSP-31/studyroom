@@ -20,6 +20,14 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     private final JwtTokenProvider jwtTokenProvider;
     private final CustomUserDetailsService userDetailsService;
 
+    /**
+     * JWT 인증 필터
+     * @param request 요청정보
+     * @param response 응답정보
+     * @param filterChain 필터체인
+     * @throws ServletException 오류처리
+     * @throws IOException 오류처리
+     */
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {

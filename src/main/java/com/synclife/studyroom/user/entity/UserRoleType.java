@@ -1,6 +1,6 @@
 package com.synclife.studyroom.user.entity;
 
 public enum UserRoleType {
-    ADMIN,
-    USER;
+    ROLE_ADMIN,
+    ROLE_USER;
 }
