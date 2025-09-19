@@ -10,4 +10,6 @@ public interface ReservationService {
     void createReservation(ReservationRequestDto requestDto);
 
     List<ReservationResponseDto> getRoomsByDate(LocalDate date);
+
+    void deleteReservation(Long id);
 }

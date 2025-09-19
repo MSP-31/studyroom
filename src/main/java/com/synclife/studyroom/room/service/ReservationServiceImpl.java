@@ -8,7 +8,7 @@ import com.synclife.studyroom.room.entity.Room;
 import com.synclife.studyroom.room.repository.ReservationRepository;
 import com.synclife.studyroom.room.repository.RoomRepository;
 import com.synclife.studyroom.user.entity.User;
-import com.synclife.studyroom.user.repository.UserRepository;
+import com.synclife.studyroom.user.entity.UserRoleType;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -19,6 +19,7 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -28,7 +29,6 @@ public class ReservationServiceImpl implements ReservationService {
 
     private final ReservationRepository reservationRepository;
     private final RoomRepository roomRepository;
-    private final UserRepository userRepository;
 
     private final JwtService jwtService;
 
@@ -74,6 +74,17 @@ public class ReservationServiceImpl implements ReservationService {
         
         List<Reservation> reservations = reservationRepository.findByStartAt(start,end);
         return toReservationResponseDto(reservations);
+    }
+
+    @Override
+    @Transactional
+    public void deleteReservation(Long id) {
+        User user = jwtService.getUser();
+        Long reservationId = reservationRepository.findById(id).get().getUser().getId();
+        if (!user.getRole().equals(UserRoleType.ROLE_ADMIN) && !user.getId().equals(reservationId)){
+            throw new RuntimeException("권한이 없습니다.");
+        }
+        reservationRepository.deleteById(id);
     }
 
     /**

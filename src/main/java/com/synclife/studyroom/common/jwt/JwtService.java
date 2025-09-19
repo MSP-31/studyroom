@@ -69,7 +69,6 @@ public class JwtService {
     public User getUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();
-        System.out.println(username);
         return userRepository.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException("해당하는 유저가 없습니다."));
     }
