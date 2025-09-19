@@ -1,6 +1,7 @@
 package com.synclife.studyroom.user.service;
 
 import com.synclife.studyroom.user.dto.TokenResponseDto;
+import com.synclife.studyroom.user.dto.UserLoginDto;
 import com.synclife.studyroom.user.dto.UserRequestDto;
 import com.synclife.studyroom.user.entity.User;
 import com.synclife.studyroom.user.jwt.JwtTokenProvider;
@@ -20,10 +21,10 @@ public class UserServiceImpl implements UserService{
     private final JwtTokenProvider jwtProvider;
 
     @Override
-    public TokenResponseDto login(String userName, String password) {
-        User user = userRepository.findByUsername(userName)
+    public TokenResponseDto login(UserLoginDto userLoginDto) {
+        User user = userRepository.findByUsername(userLoginDto.getUsername())
                 .orElseThrow(() -> new RuntimeException("해당하는 이메일이 없습니다."));
-        if (!passwordEncoder.matches(password, user.getPassword())) {
+        if (!passwordEncoder.matches(userLoginDto.getPassword(), user.getPassword())) {
             throw new RuntimeException("비밀번호가 틀렸습니다");
         }
 

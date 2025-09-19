@@ -2,6 +2,7 @@ package com.synclife.studyroom.user.controller;
 
 import com.synclife.studyroom.common.dto.ResponseDto;
 import com.synclife.studyroom.user.dto.TokenResponseDto;
+import com.synclife.studyroom.user.dto.UserLoginDto;
 import com.synclife.studyroom.user.dto.UserRequestDto;
 import com.synclife.studyroom.user.service.UserService;
 import jakarta.validation.Valid;
@@ -21,10 +22,8 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping("/login")
-    public ResponseEntity<ResponseDto<TokenResponseDto>> loginUser(
-            @RequestParam String userName,
-            @RequestParam String password){
-        TokenResponseDto tokenResponseDto = userService.login(userName, password);
+    public ResponseEntity<ResponseDto<TokenResponseDto>> loginUser(@RequestBody @Valid UserLoginDto userLoginDto){
+        TokenResponseDto tokenResponseDto = userService.login(userLoginDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(
                 new ResponseDto<>(
                         HttpStatus.CREATED.value(),

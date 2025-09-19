@@ -5,10 +5,9 @@ import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-public class TokenResponseDto {
+public class UserLoginDto {
 
-    private final String accessToken;
+    private final String username;
 
-    private final Long userId;
-
+    private final String password;
 }
