@@ -15,18 +15,22 @@ public class RoomServiceImpl implements RoomService {
 
     private final RoomRepository roomRepository;
 
+    /**
+     * (관리자) 방 생성 메서드
+     * @param requestDto 방이름, 위치, 인원
+     */
     @Secured("ROLE_ADMIN")
     @Override
-    public void createRoom(RoomRequestDto roomRequestDto) {
+    public void createRoom(RoomRequestDto requestDto) {
 
-        if (roomRequestDto.getCapacity() <= 0) {
+        if (requestDto.getCapacity() <= 0) {
             throw new RuntimeException("수용 인원은 0보다 커야 합니다.");
         }
 
         Room room = Room.builder()
-                .roomName(roomRequestDto.getRoomName())
-                .location(roomRequestDto.getLocation())
-                .capacity(roomRequestDto.getCapacity())
+                .roomName(requestDto.getRoomName())
+                .location(requestDto.getLocation())
+                .capacity(requestDto.getCapacity())
                 .build();
         roomRepository.save(room);
     }

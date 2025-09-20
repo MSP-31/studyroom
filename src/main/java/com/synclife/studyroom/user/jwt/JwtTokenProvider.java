@@ -1,19 +1,14 @@
 package com.synclife.studyroom.user.jwt;
 
 import com.synclife.studyroom.common.jwt.JwtService;
-import com.synclife.studyroom.user.entity.UserRoleType;
 import io.jsonwebtoken.Jwts;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.StandardCharsets;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -59,7 +54,7 @@ public class JwtTokenProvider {
     }
 
     /**
-     * 토큰 만료여부 확인
+     * 토큰 만료여부 확인 메서드
      * @param token 검증할 JWT
      * @return 유효하면 true 만료는 false 반환
      */
@@ -67,6 +62,11 @@ public class JwtTokenProvider {
         return jwtService.validateToken(token);
     }
 
+    /**
+     * 현재 유저의 이름을 반환하는 메서드
+     * @param token
+     * @return
+     */
     public String getUsername(String token) {
         return jwtService.getUsername(token);
     }

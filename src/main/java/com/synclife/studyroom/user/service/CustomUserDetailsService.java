@@ -14,6 +14,11 @@ import org.springframework.stereotype.Service;
 public class CustomUserDetailsService implements UserDetailsService {
     private final UserRepository userRepository;
 
+    /**
+     * 유저 이름을 토대로 유저 정보를 반환
+     * @param username 유저 정보를 얻기위한 유저 이름
+     * @return User 정보
+     */
     @Override
     public UserDetails loadUserByUsername(String username) {
         User user = userRepository.findByUsername(username)
