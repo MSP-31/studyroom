@@ -33,12 +33,6 @@ public class Reservation {
     @JoinColumn(name = "rooms_id", nullable = false)
     private Room room;
 
-    @Column(name = "start_at", nullable = false)
-    private LocalDateTime startAt;
-
-    @Column(name = "end_at", nullable = false)
-    private LocalDateTime endAt;
-
     // JPA에서는 tstzrange 타입을 지원하지 않기 때문에 String으로 처리
     @Column(name = "time_range", columnDefinition = "tstzrange")
     private String timeRange;

@@ -19,7 +19,6 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -59,25 +58,30 @@ public class ReservationServiceImpl implements ReservationService {
         reservationRepository.saveReservationWithRange(
                 user.getId(),
                 room.getId(),
-                requestDto.getStartAt(),
-                requestDto.getEndAt(),
                 timeRange
         );
-        System.out.println("ok");
     }
 
+    /**
+     * 해당 날짜 예약 현황 조회
+     * @param date 현재 날짜 데이터
+     * @return 예약 리스트 DTO
+     */
     @Override
     public List<ReservationResponseDto> getRoomsByDate(LocalDate date) {
-        // 날짜 범위
-        LocalDateTime start = date.atStartOfDay();
-        LocalDateTime end = date.plusDays(1).atStartOfDay();
-        
-        List<Reservation> reservations = reservationRepository.findByStartAt(start,end);
+        ZoneId zone = ZoneId.of("Asia/Seoul");
+        ZonedDateTime start = date.atStartOfDay(zone);
+        ZonedDateTime end = date.plusDays(1).atStartOfDay(zone);
+
+        List<Reservation> reservations = reservationRepository.findByTimeRange(start,end);
         return toReservationResponseDto(reservations);
     }
 
+    /**
+     * 예약 취소 메서드
+     * @param id 예약 id
+     */
     @Override
-    @Transactional
     public void deleteReservation(Long id) {
         User user = jwtService.getUser();
         Long reservationId = reservationRepository.findById(id).get().getUser().getId();
@@ -89,7 +93,7 @@ public class ReservationServiceImpl implements ReservationService {
 
     /**
      * 예약 엔티티들을 응답용 DTO로 변환하는 메서드
-     * @param reservations 지정된 범위의 예약정보
+     * @param reservations 지정된 범위의 예약정보 리스트
      * @return 예약정보 DTO
      */
     private List<ReservationResponseDto> toReservationResponseDto(List<Reservation> reservations) {
@@ -99,9 +103,32 @@ public class ReservationServiceImpl implements ReservationService {
                         .roomName(reservation.getRoom().getRoomName())
                         .location(reservation.getRoom().getLocation())
                         .capacity(reservation.getRoom().getCapacity())
-                        .startAt(reservation.getStartAt())
-                        .endAt(reservation.getEndAt())
+                        .startAt(getDateTime(reservation.getTimeRange(),0))
+                        .endAt(getDateTime(reservation.getTimeRange(),1))
                         .build())
                 .collect(Collectors.toList());
+    }
+
+    /**
+     * timeRage를 보기좋게 형식을 변환하는 메서드
+     * @param timeRange tstzrange 형식의 시간 경계
+     * @param part 0: 시작시간, 1: 끝시간
+     * @return 시간 문자열(yyyy-MM-dd HH:mm) 반환
+     */
+    private String getDateTime (String timeRange, int part){
+        // 불필요한 특수문자를 제거하고 , 단위로 분리하여 배열에 삽입
+        timeRange = timeRange.replace("[", "")
+                             .replace(")", "")
+                             .replace("\"", "");
+        String[] parts = timeRange.split(",");
+        String cleaned = parts[part].replace("+09", "+09:00");
+
+        // 데이터 포맷 변경
+        DateTimeFormatter input = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSSXXX");
+        DateTimeFormatter output = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+
+        ZonedDateTime dateTime = ZonedDateTime.parse(cleaned, input);
+
+        return dateTime.format(output);
     }
 }

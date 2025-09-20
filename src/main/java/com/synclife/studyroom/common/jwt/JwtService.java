@@ -66,6 +66,10 @@ public class JwtService {
         return getClaims(token).get("username", String.class);
     }
 
+    /**
+     * 현재 로그인한 유저의 정보를 가져오는 메서드
+     * @return (User) 현재 유저의 정보 반환
+     */
     public User getUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();

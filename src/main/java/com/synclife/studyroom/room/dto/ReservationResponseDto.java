@@ -4,8 +4,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-import java.time.LocalDateTime;
-
 @Getter
 @Builder
 @RequiredArgsConstructor
@@ -18,7 +16,7 @@ public class ReservationResponseDto {
 
     private final Long capacity;
 
-    private final LocalDateTime startAt;
+    private final String startAt;
 
-    private final LocalDateTime endAt;
+    private final String endAt;
 }
