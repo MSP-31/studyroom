@@ -83,7 +83,7 @@ public class ReservationServiceImpl implements ReservationService {
         Long userId = reservation.getUser().getId();
 
         if (!user.getRole().equals(UserRoleType.ROLE_ADMIN) && !user.getId().equals(userId)){
-            throw new CustomException(ExceptionMessage.NOT_PERMISSION_USER);
+            throw new CustomException(ExceptionMessage.RESERVATION_CANCEL_NOT_ALLOWED);
         }
         reservationRepository.deleteById(id);
     }
