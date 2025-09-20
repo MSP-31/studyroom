@@ -1,12 +1,13 @@
 package com.synclife.studyroom.user.service;
 
+import com.synclife.studyroom.common.exception.exceptions.CustomException;
+import com.synclife.studyroom.common.exception.messages.ExceptionMessage;
 import com.synclife.studyroom.user.dto.CustomUserDetails;
 import com.synclife.studyroom.user.entity.User;
 import com.synclife.studyroom.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -22,7 +23,7 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) {
         User user = userRepository.findByUsername(username)
-                .orElseThrow(() ->  new UsernameNotFoundException("사용자 없음"));
+                .orElseThrow(() ->  new CustomException(ExceptionMessage.USER_NOT_FOUND));
 
         return new CustomUserDetails(user);
     }

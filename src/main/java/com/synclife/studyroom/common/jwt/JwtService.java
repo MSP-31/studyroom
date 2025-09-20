@@ -1,5 +1,7 @@
 package com.synclife.studyroom.common.jwt;
 
+import com.synclife.studyroom.common.exception.exceptions.CustomException;
+import com.synclife.studyroom.common.exception.messages.ExceptionMessage;
 import com.synclife.studyroom.user.entity.User;
 import com.synclife.studyroom.user.repository.UserRepository;
 import io.jsonwebtoken.Claims;
@@ -97,6 +99,6 @@ public class JwtService {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();
         return userRepository.findByUsername(username)
-                .orElseThrow(() -> new RuntimeException("해당하는 유저가 없습니다."));
+                .orElseThrow(() -> new CustomException(ExceptionMessage.USER_NOT_FOUND));
     }
 }

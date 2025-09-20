@@ -1,5 +1,7 @@
 package com.synclife.studyroom.room.service;
 
+import com.synclife.studyroom.common.exception.exceptions.CustomException;
+import com.synclife.studyroom.common.exception.messages.ExceptionMessage;
 import com.synclife.studyroom.room.dto.RoomRequestDto;
 import com.synclife.studyroom.room.entity.Room;
 import com.synclife.studyroom.room.repository.RoomRepository;
@@ -24,7 +26,7 @@ public class RoomServiceImpl implements RoomService {
     public void createRoom(RoomRequestDto requestDto) {
 
         if (requestDto.getCapacity() <= 0) {
-            throw new RuntimeException("수용 인원은 0보다 커야 합니다.");
+            throw new CustomException(ExceptionMessage.CAPACITY_MUST_BE_POSITIVE);
         }
 
         Room room = Room.builder()

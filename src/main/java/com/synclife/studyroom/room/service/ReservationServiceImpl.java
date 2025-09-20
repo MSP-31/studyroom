@@ -1,5 +1,7 @@
 package com.synclife.studyroom.room.service;
 
+import com.synclife.studyroom.common.exception.exceptions.CustomException;
+import com.synclife.studyroom.common.exception.messages.ExceptionMessage;
 import com.synclife.studyroom.common.jwt.JwtService;
 import com.synclife.studyroom.room.dto.ReservationRequestDto;
 import com.synclife.studyroom.room.dto.ReservationResponseDto;
@@ -14,7 +16,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -39,7 +40,7 @@ public class ReservationServiceImpl implements ReservationService {
     public void createReservation(ReservationRequestDto requestDto){
         User user = jwtService.getUser();
         Room room = roomRepository.findById(requestDto.getRoomId())
-                .orElseThrow(() -> new RuntimeException("해당하는 회의실이 없습니다."));
+                .orElseThrow(() -> new CustomException(ExceptionMessage.ROOM_NOT_FOUND));
 
         String timeRange = setTstzrangeFormat(requestDto);
 
@@ -72,9 +73,13 @@ public class ReservationServiceImpl implements ReservationService {
     @Override
     public void deleteReservation(Long id) {
         User user = jwtService.getUser();
-        Long reservationId = reservationRepository.findById(id).get().getUser().getId();
-        if (!user.getRole().equals(UserRoleType.ROLE_ADMIN) && !user.getId().equals(reservationId)){
-            throw new RuntimeException("권한이 없습니다.");
+
+        Reservation reservation = reservationRepository.findById(id)
+                .orElseThrow(() -> new CustomException(ExceptionMessage.RESERVATION_NOT_FOUND));
+        Long userId = reservation.getUser().getId();
+
+        if (!user.getRole().equals(UserRoleType.ROLE_ADMIN) && !user.getId().equals(userId)){
+            throw new CustomException(ExceptionMessage.NOT_PERMISSION_USER);
         }
         reservationRepository.deleteById(id);
     }
@@ -131,7 +136,11 @@ public class ReservationServiceImpl implements ReservationService {
         ZonedDateTime endZoned = requestDto.getEndAt().atZone(ZoneId.of("Asia/Seoul"));
 
         if (startZoned.equals(endZoned)){
-            throw new RuntimeException("시작 시간과 끝 시간이 같습니다.");
+            // 시작과 끝이 같으면 오류
+            throw new CustomException(ExceptionMessage.RESERVATION_TIME_INVALID);
+        }else if (startZoned.isAfter(endZoned)){
+            // 시작이 끝 보다 늦으면 오류
+            throw new CustomException(ExceptionMessage.RESERVATION_START_AFTER_END);
         }
 
         // tstzrange 포맷에 맞춰서 저장

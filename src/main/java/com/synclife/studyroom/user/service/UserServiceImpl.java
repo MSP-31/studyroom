@@ -1,5 +1,7 @@
 package com.synclife.studyroom.user.service;
 
+import com.synclife.studyroom.common.exception.exceptions.CustomException;
+import com.synclife.studyroom.common.exception.messages.ExceptionMessage;
 import com.synclife.studyroom.user.dto.TokenResponseDto;
 import com.synclife.studyroom.user.dto.UserLoginDto;
 import com.synclife.studyroom.user.dto.UserRequestDto;
@@ -28,10 +30,10 @@ public class UserServiceImpl implements UserService{
     @Override
     public TokenResponseDto login(UserLoginDto userLoginDto) {
         User user = userRepository.findByUsername(userLoginDto.getUsername())
-                .orElseThrow(() -> new RuntimeException("해당하는 이메일이 없습니다."));
+                .orElseThrow(() -> new CustomException(ExceptionMessage.USER_NOT_FOUND));
 
         if (!passwordEncoder.matches(userLoginDto.getPassword(), user.getPassword())) {
-            throw new RuntimeException("비밀번호가 틀렸습니다");
+            throw new CustomException(ExceptionMessage.PASSWORD_MISMATCH);
         }
 
         return new TokenResponseDto(
@@ -49,7 +51,7 @@ public class UserServiceImpl implements UserService{
     public void createUser(UserRequestDto userRequestDto) {
         userRepository.findByUsername(userRequestDto.getUsername())
                 .ifPresent(user -> {
-                    throw new RuntimeException("동일한 이름이 있습니다.");
+                    throw new CustomException(ExceptionMessage.DUPLICATE_USERNAME);
                 });
 
         User user = User.builder()
