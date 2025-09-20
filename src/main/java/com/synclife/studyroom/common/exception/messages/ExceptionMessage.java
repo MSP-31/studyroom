@@ -23,7 +23,9 @@ public enum ExceptionMessage {
     ROOM_NOT_FOUND("R002", "해당하는 회의실이 없습니다.", HttpStatus.NOT_FOUND),
     RESERVATION_TIME_INVALID("R003", "시작 시간과 끝 시간이 같습니다.", HttpStatus.BAD_REQUEST),
     RESERVATION_START_AFTER_END("R004", "시작 시간이 끝 시간보다 늦을 수 없습니다.", HttpStatus.BAD_REQUEST),
-    RESERVATION_NOT_FOUND("R005", "해당하는 예약이 없습니다.", HttpStatus.NOT_FOUND);
+    RESERVATION_NOT_FOUND("R005", "해당하는 예약이 없습니다.", HttpStatus.NOT_FOUND),
+    RESERVATION_TIME_CONFLICT("R006", "해당 시간대에 이미 예약이 존재합니다.", HttpStatus.CONFLICT);
+
 
     private final String code;
     private final String message;

@@ -3,6 +3,7 @@ package com.synclife.studyroom.room.controller;
 import com.synclife.studyroom.common.dto.ResponseDto;
 import com.synclife.studyroom.room.dto.ReservationResponseDto;
 import com.synclife.studyroom.room.dto.RoomRequestDto;
+import com.synclife.studyroom.room.dto.RoomResponseDto;
 import com.synclife.studyroom.room.service.ReservationService;
 import com.synclife.studyroom.room.service.RoomService;
 import jakarta.validation.Valid;
@@ -27,13 +28,13 @@ public class RoomController {
     private final ReservationService reservationService;
 
     @PostMapping
-    public ResponseEntity<ResponseDto<Void>> createRoom(@RequestBody @Valid RoomRequestDto roomRequestDto){
-        roomService.createRoom(roomRequestDto);
+    public ResponseEntity<ResponseDto<RoomResponseDto>> createRoom(@RequestBody @Valid RoomRequestDto roomRequestDto){
+        RoomResponseDto responseDto = roomService.createRoom(roomRequestDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(
                 new ResponseDto<>(
                         HttpStatus.CREATED.value(),
                         "회의실 등록 성공",
-                        null
+                        responseDto
                 )
         );
     }

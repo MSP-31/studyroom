@@ -34,21 +34,25 @@ public class ReservationServiceImpl implements ReservationService {
 
     /**
      * 회의실 예약 생성 메서드
-     * @param requestDto 방아이디, 시작시간, 끝시간
+     *
+     * @param requestDto 회의실 아이디, 시작시간, 끝시간
+     * @return           예약 정보 반환
      */
     @Override
-    public void createReservation(ReservationRequestDto requestDto){
+    public ReservationResponseDto createReservation(ReservationRequestDto requestDto){
         User user = jwtService.getUser();
         Room room = roomRepository.findById(requestDto.getRoomId())
                 .orElseThrow(() -> new CustomException(ExceptionMessage.ROOM_NOT_FOUND));
 
         String timeRange = setTstzrangeFormat(requestDto);
 
-        reservationRepository.saveReservationWithRange(
+        Reservation reservation = reservationRepository.saveReservationWithRange(
                 user.getId(),
                 room.getId(),
                 timeRange
         );
+
+        return new ReservationResponseDto(reservation, requestDto);
     }
 
     /**

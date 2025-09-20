@@ -2,6 +2,7 @@ package com.synclife.studyroom.room.controller;
 
 import com.synclife.studyroom.common.dto.ResponseDto;
 import com.synclife.studyroom.room.dto.ReservationRequestDto;
+import com.synclife.studyroom.room.dto.ReservationResponseDto;
 import com.synclife.studyroom.room.service.ReservationService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -21,13 +22,14 @@ public class ReservationController {
     private final ReservationService reservationService;
 
     @PostMapping
-    public ResponseEntity<ResponseDto<Void>> createReservation(@RequestBody @Valid ReservationRequestDto requestDto){
-        reservationService.createReservation(requestDto);
+    public ResponseEntity<ResponseDto<ReservationResponseDto>> createReservation(
+            @RequestBody @Valid ReservationRequestDto requestDto){
+        ReservationResponseDto responseDto = reservationService.createReservation(requestDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(
                 new ResponseDto<>(
                         HttpStatus.CREATED.value(),
                         "회의실 예약 성공",
-                        null
+                        responseDto
                 )
         );
     }

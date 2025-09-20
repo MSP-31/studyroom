@@ -5,7 +5,9 @@ import com.synclife.studyroom.common.exception.exceptions.CustomException;
 import com.synclife.studyroom.common.exception.messages.ExceptionMessage;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -54,6 +56,20 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return ResponseEntity.status(ExceptionMessage.INPUT_INVALID_VALUE.getStatus())
                 .body(ErrorResponseDto.of(ExceptionMessage.INPUT_INVALID_VALUE));
     }
+
+    /**
+     * DB의 제약 조건이 위반되었을 때 발생하는 예외를 처리하는 핸들러
+     * ex) 예약시간 중복
+     * @param ex DataIntegrityViolationException - 데이터 무결성 위반 예외 객체
+     * @return   예약 시간 충돌 에러 정보를 담은 ResponseEntity
+     */
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<ErrorResponseDto> handleDataIntegrity(DataIntegrityViolationException ex) {
+        return ResponseEntity.status(ExceptionMessage.RESERVATION_TIME_CONFLICT.getStatus())
+                .body(ErrorResponseDto.of(ExceptionMessage.RESERVATION_TIME_CONFLICT));
+    }
+
+    // ------ 컨트롤러 진입 전에 발생하는 예외는 오버라이드로 처리 -------
 
     /**
      * 유효성 검사 실패 시 호출되는 예외 처리 핸들러
