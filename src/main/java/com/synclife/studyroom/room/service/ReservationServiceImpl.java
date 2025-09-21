@@ -133,7 +133,7 @@ public class ReservationServiceImpl implements ReservationService {
 
     /**
      * 시작 시간과 끝 시간을 DTO로 받아서 tstzrange에 맞게 형식을 변환하는 메서드
-     * @param requestDto 시작 시간과 끝 시간이 담긴 DTO
+     * @param requestDto 시작 시간과 종료 시간이 담긴 DTO
      * @return tstzrange 형식의 문자열
      */
     private String setTstzrangeFormat(ReservationRequestDto requestDto){

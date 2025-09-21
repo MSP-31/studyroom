@@ -22,7 +22,7 @@ public class Room {
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
-    @Column(name = "room_name)", nullable = false)
+    @Column(name = "room_name", nullable = false)
     private String roomName;
 
     @Column(nullable = false)
