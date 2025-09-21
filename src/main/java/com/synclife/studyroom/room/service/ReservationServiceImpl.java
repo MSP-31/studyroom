@@ -67,6 +67,7 @@ public class ReservationServiceImpl implements ReservationService {
         ZonedDateTime end = date.plusDays(1).atStartOfDay(zone);
 
         List<Reservation> reservations = reservationRepository.findByTimeRange(start,end);
+
         return toReservationResponseDto(reservations);
     }
 
@@ -123,7 +124,7 @@ public class ReservationServiceImpl implements ReservationService {
         String cleaned = parts[part].replace("+09", "+09:00");
 
         // 데이터 포맷 변경
-        DateTimeFormatter input = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSSXXX");
+        DateTimeFormatter input = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSSX");
         DateTimeFormatter output = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
         ZonedDateTime dateTime = ZonedDateTime.parse(cleaned, input);
