@@ -1,8 +1,17 @@
 spring:
   application:
     name: studyroom
-  profiles:
-    active: dev
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/studyroom_db
+    username: studyroom_user
+    password: studyroom_pass
   sql:
     init:
       mode: always
@@ -18,3 +27,5 @@ springdoc:
   default-consumes-media-type: application/json;charset=UTF-8
   default-produces-media-type: application/json;charset=UTF-8
   override-with-generic-response: false
+jwt:
+  secret: 65yo64GI7ZWc6rWt67Cl7ZWc7IKs67Cc7ZWY6rOg7Iu264uk

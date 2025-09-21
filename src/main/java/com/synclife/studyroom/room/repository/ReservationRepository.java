@@ -37,12 +37,12 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
      */
     @Query(value = """
     INSERT INTO reservation (user_id, rooms_id, time_range)
-    VALUES (:userId, :roomId, CAST(:timeRange AS tstzrange))
+    VALUES (:userId, :reservationId, CAST(:timeRange AS tstzrange))
     RETURNING *
     """, nativeQuery = true)
     Reservation saveReservationWithRange(
             @Param("userId") Long userId,
-            @Param("roomId") Long roomId,
+            @Param("reservationId") Long roomId,
             @Param("timeRange") String timeRange
     );
 }

@@ -9,7 +9,7 @@ import lombok.RequiredArgsConstructor;
 @Builder
 @RequiredArgsConstructor
 public class ReservationResponseDto {
-    private final Long roomId;
+    private final Long reservationId;
 
     private final String roomName;
 
@@ -22,7 +22,7 @@ public class ReservationResponseDto {
     private final String endAt;
 
     public ReservationResponseDto(Reservation reservation, ReservationRequestDto requestDto) {
-        this.roomId = reservation.getId();
+        this.reservationId = reservation.getId();
         this.roomName = reservation.getRoom().getRoomName();
         this.location = reservation.getRoom().getLocation();
         this.capacity = reservation.getRoom().getCapacity();

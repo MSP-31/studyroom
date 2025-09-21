@@ -96,7 +96,7 @@ public class ReservationServiceImpl implements ReservationService {
     private List<ReservationResponseDto> toReservationResponseDto(List<Reservation> reservations) {
         return reservations.stream()
                 .map(reservation -> ReservationResponseDto.builder()
-                        .roomId(reservation.getRoom().getId())
+                        .reservationId(reservation.getId())
                         .roomName(reservation.getRoom().getRoomName())
                         .location(reservation.getRoom().getLocation())
                         .capacity(reservation.getRoom().getCapacity())

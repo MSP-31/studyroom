@@ -6,8 +6,6 @@ CREATE TABLE IF NOT EXISTS reservation (
   id SERIAL PRIMARY KEY,
   user_id BIGINT NOT NULL,
   rooms_id BIGINT NOT NULL,
-  start_at TIMESTAMP NOT NULL,
-  end_at TIMESTAMP NOT NULL,
   time_range tstzrange NOT NULL
 );
 
