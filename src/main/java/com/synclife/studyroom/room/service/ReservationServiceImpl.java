@@ -1,5 +1,7 @@
 package com.synclife.studyroom.room.service;
 
+import com.synclife.studyroom.common.exception.exceptions.CustomException;
+import com.synclife.studyroom.common.exception.messages.ExceptionMessage;
 import com.synclife.studyroom.common.jwt.JwtService;
 import com.synclife.studyroom.room.dto.ReservationRequestDto;
 import com.synclife.studyroom.room.dto.ReservationResponseDto;
@@ -14,7 +16,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -32,38 +33,30 @@ public class ReservationServiceImpl implements ReservationService {
     private final JwtService jwtService;
 
     /**
-     * 회의실 예약 생성
-     * @param requestDto 방아이디, 시작시간, 끝시간
+     * 회의실 예약 생성 메서드
+     *
+     * @param requestDto 회의실 아이디, 시작시간, 끝시간
+     * @return           예약 정보 반환
      */
     @Override
-    public void createReservation(ReservationRequestDto requestDto){
+    public ReservationResponseDto createReservation(ReservationRequestDto requestDto){
         User user = jwtService.getUser();
         Room room = roomRepository.findById(requestDto.getRoomId())
-                .orElseThrow(() -> new RuntimeException("해당하는 회의실이 없습니다."));
+                .orElseThrow(() -> new CustomException(ExceptionMessage.ROOM_NOT_FOUND));
 
-        // 시간대 지정
-        ZonedDateTime startZoned = requestDto.getStartAt().atZone(ZoneId.of("Asia/Seoul"));
-        ZonedDateTime endZoned = requestDto.getEndAt().atZone(ZoneId.of("Asia/Seoul"));
+        String timeRange = setTstzrangeFormat(requestDto);
 
-        if (startZoned.equals(endZoned)){
-            throw new RuntimeException("시작 시간과 끝 시간이 같습니다.");
-        }
-
-        // tstzrange 포맷에 맞춰서 저장
-        String timeRange = String.format("[%s, %s)",
-                startZoned.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME),
-                endZoned.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME)
-        );
-
-        reservationRepository.saveReservationWithRange(
+        Reservation reservation = reservationRepository.saveReservationWithRange(
                 user.getId(),
                 room.getId(),
                 timeRange
         );
+
+        return new ReservationResponseDto(reservation, requestDto);
     }
 
     /**
-     * 해당 날짜 예약 현황 조회
+     * 해당 날짜 예약 현황 조회 메서드
      * @param date 현재 날짜 데이터
      * @return 예약 리스트 DTO
      */
@@ -84,9 +77,13 @@ public class ReservationServiceImpl implements ReservationService {
     @Override
     public void deleteReservation(Long id) {
         User user = jwtService.getUser();
-        Long reservationId = reservationRepository.findById(id).get().getUser().getId();
-        if (!user.getRole().equals(UserRoleType.ROLE_ADMIN) && !user.getId().equals(reservationId)){
-            throw new RuntimeException("권한이 없습니다.");
+
+        Reservation reservation = reservationRepository.findById(id)
+                .orElseThrow(() -> new CustomException(ExceptionMessage.RESERVATION_NOT_FOUND));
+        Long userId = reservation.getUser().getId();
+
+        if (!user.getRole().equals(UserRoleType.ROLE_ADMIN) && !user.getId().equals(userId)){
+            throw new CustomException(ExceptionMessage.RESERVATION_CANCEL_NOT_ALLOWED);
         }
         reservationRepository.deleteById(id);
     }
@@ -130,5 +127,30 @@ public class ReservationServiceImpl implements ReservationService {
         ZonedDateTime dateTime = ZonedDateTime.parse(cleaned, input);
 
         return dateTime.format(output);
+    }
+
+    /**
+     * 시작 시간과 끝 시간을 DTO로 받아서 tstzrange에 맞게 형식을 변환하는 메서드
+     * @param requestDto 시작 시간과 끝 시간이 담긴 DTO
+     * @return tstzrange 형식의 문자열
+     */
+    private String setTstzrangeFormat(ReservationRequestDto requestDto){
+        // 시간대 지정
+        ZonedDateTime startZoned = requestDto.getStartAt().atZone(ZoneId.of("Asia/Seoul"));
+        ZonedDateTime endZoned = requestDto.getEndAt().atZone(ZoneId.of("Asia/Seoul"));
+
+        if (startZoned.equals(endZoned)){
+            // 시작과 끝이 같으면 오류
+            throw new CustomException(ExceptionMessage.RESERVATION_TIME_INVALID);
+        }else if (startZoned.isAfter(endZoned)){
+            // 시작이 끝 보다 늦으면 오류
+            throw new CustomException(ExceptionMessage.RESERVATION_START_AFTER_END);
+        }
+
+        // tstzrange 포맷에 맞춰서 저장
+        return String.format("[%s, %s)",
+                startZoned.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME),
+                endZoned.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME)
+        );
     }
 }

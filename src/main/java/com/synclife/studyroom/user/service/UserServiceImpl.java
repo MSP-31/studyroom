@@ -1,5 +1,7 @@
 package com.synclife.studyroom.user.service;
 
+import com.synclife.studyroom.common.exception.exceptions.CustomException;
+import com.synclife.studyroom.common.exception.messages.ExceptionMessage;
 import com.synclife.studyroom.user.dto.TokenResponseDto;
 import com.synclife.studyroom.user.dto.UserLoginDto;
 import com.synclife.studyroom.user.dto.UserRequestDto;
@@ -20,12 +22,18 @@ public class UserServiceImpl implements UserService{
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider jwtProvider;
 
+    /**
+     * 아이디와 비밀번호를 입력받아 엑세스 토큰을 발급하는 메서드
+     * @param userLoginDto 로그인에 필요한 아이디/비밀번호 정보
+     * @return 엑세스토큰과 유저ID가 담긴 DTO
+     */
     @Override
     public TokenResponseDto login(UserLoginDto userLoginDto) {
         User user = userRepository.findByUsername(userLoginDto.getUsername())
-                .orElseThrow(() -> new RuntimeException("해당하는 이메일이 없습니다."));
+                .orElseThrow(() -> new CustomException(ExceptionMessage.USER_NOT_FOUND));
+
         if (!passwordEncoder.matches(userLoginDto.getPassword(), user.getPassword())) {
-            throw new RuntimeException("비밀번호가 틀렸습니다");
+            throw new CustomException(ExceptionMessage.PASSWORD_MISMATCH);
         }
 
         return new TokenResponseDto(
@@ -35,11 +43,15 @@ public class UserServiceImpl implements UserService{
         );
     }
 
+    /**
+     * 계정 생성 메서드
+     * @param userRequestDto 계정 생성에 필요한 아이디/비밀번호/권한 정보
+     */
     @Override
     public void createUser(UserRequestDto userRequestDto) {
         userRepository.findByUsername(userRequestDto.getUsername())
                 .ifPresent(user -> {
-                    throw new RuntimeException("동일한 이름이 있습니다.");
+                    throw new CustomException(ExceptionMessage.DUPLICATE_USERNAME);
                 });
 
         User user = User.builder()

@@ -7,7 +7,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 public interface ReservationService {
-    void createReservation(ReservationRequestDto requestDto);
+    ReservationResponseDto createReservation(ReservationRequestDto requestDto);
 
     List<ReservationResponseDto> getRoomsByDate(LocalDate date);
 

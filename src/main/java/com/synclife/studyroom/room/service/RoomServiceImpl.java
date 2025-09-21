@@ -1,6 +1,9 @@
 package com.synclife.studyroom.room.service;
 
+import com.synclife.studyroom.common.exception.exceptions.CustomException;
+import com.synclife.studyroom.common.exception.messages.ExceptionMessage;
 import com.synclife.studyroom.room.dto.RoomRequestDto;
+import com.synclife.studyroom.room.dto.RoomResponseDto;
 import com.synclife.studyroom.room.entity.Room;
 import com.synclife.studyroom.room.repository.RoomRepository;
 import jakarta.transaction.Transactional;
@@ -15,19 +18,27 @@ public class RoomServiceImpl implements RoomService {
 
     private final RoomRepository roomRepository;
 
+    /**
+     * (관리자) 방 생성 메서드
+     *
+     * @param requestDto 방이름, 위치, 인원
+     * @return
+     */
     @Secured("ROLE_ADMIN")
     @Override
-    public void createRoom(RoomRequestDto roomRequestDto) {
-
-        if (roomRequestDto.getCapacity() <= 0) {
-            throw new RuntimeException("수용 인원은 0보다 커야 합니다.");
+    public RoomResponseDto createRoom(RoomRequestDto requestDto) {
+        // 인원수가 0보다 작거나 같다면 오류
+        if (requestDto.getCapacity() <= 0) {
+            throw new CustomException(ExceptionMessage.CAPACITY_MUST_BE_POSITIVE);
         }
 
         Room room = Room.builder()
-                .roomName(roomRequestDto.getRoomName())
-                .location(roomRequestDto.getLocation())
-                .capacity(roomRequestDto.getCapacity())
+                .roomName(requestDto.getRoomName())
+                .location(requestDto.getLocation())
+                .capacity(requestDto.getCapacity())
                 .build();
-        roomRepository.save(room);
+        Room saveRoom = roomRepository.save(room);
+
+        return new RoomResponseDto(saveRoom);
     }
 }

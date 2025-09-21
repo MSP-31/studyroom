@@ -2,7 +2,6 @@ package com.synclife.studyroom.user.dto;
 
 import com.synclife.studyroom.user.entity.UserRoleType;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 
 @Getter

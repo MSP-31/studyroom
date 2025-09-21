@@ -10,6 +10,7 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class SwaggerConfig {
+
     @Bean
     public OpenAPI openAPI() {
         return new OpenAPI()
@@ -23,6 +24,6 @@ public class SwaggerConfig {
                         )
                 )
                 .addSecurityItem(new SecurityRequirement().addList("BearerAuth"))
-                .info(new Info().title("API 제목").version("v1.0.0"));
+                .info(new Info().title("싱크라이프 백엔드 신입 개발자 과제 — 스터디룸 예약").version("v1.0.0"));
     }
 }
