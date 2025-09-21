@@ -1,17 +1,14 @@
 spring:
   application:
     name: studyroom
-  datasource:
-    driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5432/testdb
-    username: localmaster
-    password: qwer1234
+  profiles:
+    active: dev
 springdoc:
   swagger-ui:
     version: v1.0.0
     tags-sorter: alpha
     operations-sorter: alpha
-  packages-to-scan: com.beyond.homs
+  packages-to-scan: com.synclife.studyroom
   api-docs:
     path: /api-docs
   default-consumes-media-type: application/json;charset=UTF-8
