@@ -6,7 +6,7 @@ import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-@Schema(description = "회의실 생성 요청 DTO")
+@Schema(description = "회의실 등록 요청 DTO")
 public class RoomRequestDto {
 
     @Schema(description = "회의실 이름", example = "A동 3층 회의실")

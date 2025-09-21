@@ -16,7 +16,7 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
      * PostgreSQL의 '&&' 연산자를 사용하여 time_range 컬럼과 입력된 범위(tstzrange) 간의 겹침 여부를 검사합니다.
      *
      * @param start 시작 시간
-     * @param end   끝 시간
+     * @param end   종료 시간
      * @return      예약 리스트 반환
      */
     @Query(value = """

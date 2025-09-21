@@ -67,6 +67,7 @@ public class ReservationServiceImpl implements ReservationService {
         ZonedDateTime end = date.plusDays(1).atStartOfDay(zone);
 
         List<Reservation> reservations = reservationRepository.findByTimeRange(start,end);
+
         return toReservationResponseDto(reservations);
     }
 
@@ -123,7 +124,7 @@ public class ReservationServiceImpl implements ReservationService {
         String cleaned = parts[part].replace("+09", "+09:00");
 
         // 데이터 포맷 변경
-        DateTimeFormatter input = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSSXXX");
+        DateTimeFormatter input = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSSX");
         DateTimeFormatter output = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
         ZonedDateTime dateTime = ZonedDateTime.parse(cleaned, input);
@@ -133,7 +134,7 @@ public class ReservationServiceImpl implements ReservationService {
 
     /**
      * 시작 시간과 끝 시간을 DTO로 받아서 tstzrange에 맞게 형식을 변환하는 메서드
-     * @param requestDto 시작 시간과 끝 시간이 담긴 DTO
+     * @param requestDto 시작 시간과 종료 시간이 담긴 DTO
      * @return tstzrange 형식의 문자열
      */
     private String setTstzrangeFormat(ReservationRequestDto requestDto){
