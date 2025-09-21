@@ -1,8 +1,12 @@
 package com.synclife.studyroom.common.jwt;
 
+import com.synclife.studyroom.user.entity.User;
+import com.synclife.studyroom.user.repository.UserRepository;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import java.nio.charset.StandardCharsets;
@@ -17,12 +21,14 @@ import javax.crypto.spec.SecretKeySpec;
 @Component
 public class JwtService {
     private final SecretKey secretKey;
+    private final UserRepository userRepository;
 
-    public JwtService(@Value("${jwt.secret}") String secret) {
+    public JwtService(@Value("${jwt.secret}") String secret, UserRepository userRepository) {
         this.secretKey = new SecretKeySpec(
                 secret.getBytes(StandardCharsets.UTF_8),
                 Jwts.SIG.HS256.key().build().getAlgorithm()
         );
+        this.userRepository = userRepository;
     }
 
     // AccessToken 생성
@@ -57,6 +63,17 @@ public class JwtService {
     }
 
     public String getUsername(String token) {
-        return getClaims(token).getSubject();
+        return getClaims(token).get("username", String.class);
+    }
+
+    /**
+     * 현재 로그인한 유저의 정보를 가져오는 메서드
+     * @return (User) 현재 유저의 정보 반환
+     */
+    public User getUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+        return userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("해당하는 유저가 없습니다."));
     }
 }

@@ -1,13 +1,17 @@
 package com.synclife.studyroom.user.dto;
 
+import com.synclife.studyroom.user.entity.UserRoleType;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
 @Getter
-@NoArgsConstructor
+@RequiredArgsConstructor
 public class UserRequestDto {
 
-    private String email;
+    private final String username;
 
-    private String password;
+    private final String password;
+
+    private final UserRoleType role;
 }

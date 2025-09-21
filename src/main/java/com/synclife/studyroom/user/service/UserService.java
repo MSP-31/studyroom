@@ -1,10 +1,11 @@
 package com.synclife.studyroom.user.service;
 
 import com.synclife.studyroom.user.dto.TokenResponseDto;
-import com.synclife.studyroom.user.dto.UserCreateDto;
+import com.synclife.studyroom.user.dto.UserLoginDto;
+import com.synclife.studyroom.user.dto.UserRequestDto;
 
 public interface UserService {
-    void createUser(UserCreateDto userCreateDto);
+    void createUser(UserRequestDto userRequestDto);
 
-    TokenResponseDto login(String email, String password);
+    TokenResponseDto login(UserLoginDto userLoginDto);
 }
