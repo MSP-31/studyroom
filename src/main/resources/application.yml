@@ -1,18 +1,31 @@
 spring:
   application:
     name: studyroom
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5432/testdb
-    username: localmaster
-    password: qwer1234
+    url: jdbc:postgresql://postgres-db:5432/studyroom_db
+    username: studyroom_user
+    password: studyroom_pass
+  sql:
+    init:
+      mode: always
+      schema-locations: classpath:schema.sql
 springdoc:
   swagger-ui:
     version: v1.0.0
     tags-sorter: alpha
     operations-sorter: alpha
-  packages-to-scan: com.beyond.homs
+  packages-to-scan: com.synclife.studyroom
   api-docs:
     path: /api-docs
   default-consumes-media-type: application/json;charset=UTF-8
   default-produces-media-type: application/json;charset=UTF-8
+  override-with-generic-response: false
+jwt:
+  secret: 65yo64GI7ZWc6rWt67Cl7ZWc7IKs67Cc7ZWY6rOg7Iu264uk
