@@ -59,10 +59,6 @@ Spring JPA는 `EXCLUDE USING gist` 제약과 `tstzrange` 타입을 직접 지원
 2. 예약 테이블을 직접 생성하고 `EXCLUDE USING gist` 제약을 설정하여 시간 범위의 겹침을 방지.
 
 이 과정에서 기존의 `StartAt`, `EndAt` 컬럼을 제거하고 `timeRange` 하나로 통합하였으며, JPA에서는 `String` 타입으로 선언하되 `@Column(columnDefinition = "tstzrange")`를 사용해 PostgreSQL의 `tstzrange` 타입으로 매핑했습니다.
-
-  이 과정에서 이전에 작성해두었던 StartAt, EndAt 행을 제거하고 timeRange로 통합하였습니다
-  또한 tstzrange 타입대신 String 타입으로 쓰되 @Column(columnDefinition = "tstzrange") 어노테이션을 사용하여
-  직접 tstzrange 타입으로 매핑하겠음을 명시하였습니다.
   
   
 ### 용어 설명
