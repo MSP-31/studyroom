@@ -20,25 +20,26 @@ public class RoomServiceImpl implements RoomService {
 
     /**
      * (관리자) 방 생성 메서드
+     * Secured 어노테이션을 통한 권한 제어
      *
      * @param requestDto 방이름, 위치, 인원
-     * @return
+     * @return RoomResponseDto 생성된 방 정보
      */
     @Secured("ROLE_ADMIN")
     @Override
     public RoomResponseDto createRoom(RoomRequestDto requestDto) {
         // 인원수가 0보다 작거나 같다면 오류
-        if (requestDto.getCapacity() <= 0) {
+        if (requestDto.capacity() <= 0) {
             throw new CustomException(ExceptionMessage.CAPACITY_MUST_BE_POSITIVE);
         }
 
         Room room = Room.builder()
-                .roomName(requestDto.getRoomName())
-                .location(requestDto.getLocation())
-                .capacity(requestDto.getCapacity())
+                .roomName(requestDto.roomName())
+                .location(requestDto.location())
+                .capacity(requestDto.capacity())
                 .build();
         Room saveRoom = roomRepository.save(room);
 
-        return new RoomResponseDto(saveRoom);
+        return RoomResponseDto.from(saveRoom);
     }
 }

@@ -29,10 +29,10 @@ public class UserServiceImpl implements UserService{
      */
     @Override
     public TokenResponseDto login(UserLoginDto userLoginDto) {
-        User user = userRepository.findByUsername(userLoginDto.getUsername())
+        User user = userRepository.findByUsername(userLoginDto.username())
                 .orElseThrow(() -> new CustomException(ExceptionMessage.USER_NOT_FOUND));
 
-        if (!passwordEncoder.matches(userLoginDto.getPassword(), user.getPassword())) {
+        if (!passwordEncoder.matches(userLoginDto.password(), user.getPassword())) {
             throw new CustomException(ExceptionMessage.PASSWORD_MISMATCH);
         }
 
@@ -49,15 +49,15 @@ public class UserServiceImpl implements UserService{
      */
     @Override
     public void createUser(UserRequestDto userRequestDto) {
-        userRepository.findByUsername(userRequestDto.getUsername())
+        userRepository.findByUsername(userRequestDto.username())
                 .ifPresent(user -> {
                     throw new CustomException(ExceptionMessage.DUPLICATE_USERNAME);
                 });
 
         User user = User.builder()
-                .username(userRequestDto.getUsername())
-                .password(passwordEncoder.encode(userRequestDto.getPassword()))
-                .role(userRequestDto.getRole())
+                .username(userRequestDto.username())
+                .password(passwordEncoder.encode(userRequestDto.password()))
+                .role(userRequestDto.role())
                 .build();
         userRepository.save(user);
     }

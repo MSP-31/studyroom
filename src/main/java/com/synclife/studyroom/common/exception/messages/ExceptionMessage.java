@@ -20,12 +20,11 @@ public enum ExceptionMessage {
     // 방/예약 관련 에러
     CAPACITY_MUST_BE_POSITIVE("R001", "수용 인원은 0보다 커야 합니다.", HttpStatus.BAD_REQUEST),
     ROOM_NOT_FOUND("R002", "해당하는 회의실이 없습니다.", HttpStatus.NOT_FOUND),
-    RESERVATION_TIME_INVALID("R003", "시작 시간과 종료 시간이 같습니다.", HttpStatus.BAD_REQUEST),
-    RESERVATION_START_AFTER_END("R004", "시작 시간이 종료 시간보다 늦을 수 없습니다.", HttpStatus.BAD_REQUEST),
-    RESERVATION_NOT_FOUND("R005", "해당하는 예약을 찾을 수 없습니다.", HttpStatus.NOT_FOUND),
-    RESERVATION_TIME_CONFLICT("R006", "해당 시간대에 이미 예약이 존재합니다.", HttpStatus.CONFLICT),
-    RESERVATION_CANCEL_NOT_ALLOWED("R007", "예약 취소 권한이 없습니다.", HttpStatus.FORBIDDEN);
-
+    RESERVATION_START_AFTER_END("R003", "예약 시간이 잘못되었습니다.", HttpStatus.BAD_REQUEST),
+    RESERVATION_NOT_FOUND("R004", "해당하는 예약을 찾을 수 없습니다.", HttpStatus.NOT_FOUND),
+    RESERVATION_TIME_CONFLICT("R005", "해당 시간대에 이미 예약이 존재합니다.", HttpStatus.CONFLICT),
+    RESERVATION_CANCEL_NOT_ALLOWED("R006", "예약 취소 권한이 없습니다.", HttpStatus.FORBIDDEN),
+    RESERVATION_INVALID_START_TIME("R007", "예약 시작 시간은 현재 시간보다 이전일 수 없습니다.", HttpStatus.BAD_REQUEST);
 
     private final String code;
     private final String message;

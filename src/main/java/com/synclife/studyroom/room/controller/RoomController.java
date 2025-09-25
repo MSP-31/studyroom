@@ -56,7 +56,7 @@ public class RoomController {
     @Parameter(name = "date", description = "조회할 날짜 (yyyy-MM-dd)", required = true)
     @GetMapping
     public ResponseEntity<ResponseDto<List<ReservationResponseDto>>> createRoom(@RequestParam LocalDate date){
-        List<ReservationResponseDto> reservationResponseDtos = reservationService.getRoomsByDate(date);
+        try{List<ReservationResponseDto> reservationResponseDtos = reservationService.getRoomsByDate(date);
         return ResponseEntity.status(HttpStatus.CREATED).body(
                 new ResponseDto<>(
                         HttpStatus.CREATED.value(),
@@ -64,5 +64,15 @@ public class RoomController {
                         reservationResponseDtos
                 )
         );
+        } catch (Exception e) {
+            // 모든 예외를 포괄적으로 처리
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
+                    new ResponseDto<>(
+                            HttpStatus.INTERNAL_SERVER_ERROR.value(),
+                            "예약을 조회하는 중 오류가 발생했습니다: " + e.getMessage(),
+                            null
+                    )
+            );
+        }
     }
 }

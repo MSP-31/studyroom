@@ -41,7 +41,7 @@ public class ReservationServiceImpl implements ReservationService {
     @Override
     public ReservationResponseDto createReservation(ReservationRequestDto requestDto){
         User user = jwtService.getUser();
-        Room room = roomRepository.findById(requestDto.getRoomId())
+        Room room = roomRepository.findById(requestDto.roomId())
                 .orElseThrow(() -> new CustomException(ExceptionMessage.ROOM_NOT_FOUND));
 
         String timeRange = setTstzrangeFormat(requestDto);
@@ -52,7 +52,7 @@ public class ReservationServiceImpl implements ReservationService {
                 timeRange
         );
 
-        return new ReservationResponseDto(reservation, requestDto);
+        return ReservationResponseDto.of(reservation,requestDto);
     }
 
     /**
@@ -119,17 +119,11 @@ public class ReservationServiceImpl implements ReservationService {
         // 불필요한 특수문자를 제거하고 , 단위로 분리하여 배열에 삽입
         timeRange = timeRange.replace("[", "")
                              .replace(")", "")
-                             .replace("\"", "");
+                             .replace("\"", "")
+                             .replace("+09", "");
         String[] parts = timeRange.split(",");
-        String cleaned = parts[part].replace("+09", "+09:00");
 
-        // 데이터 포맷 변경
-        DateTimeFormatter input = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSSX");
-        DateTimeFormatter output = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-
-        ZonedDateTime dateTime = ZonedDateTime.parse(cleaned, input);
-
-        return dateTime.format(output);
+        return parts[part];
     }
 
     /**
@@ -139,14 +133,16 @@ public class ReservationServiceImpl implements ReservationService {
      */
     private String setTstzrangeFormat(ReservationRequestDto requestDto){
         // 시간대 지정
-        ZonedDateTime startZoned = requestDto.getStartAt().atZone(ZoneId.of("Asia/Seoul"));
-        ZonedDateTime endZoned = requestDto.getEndAt().atZone(ZoneId.of("Asia/Seoul"));
+        ZonedDateTime nowZoned = ZonedDateTime.now(ZoneId.of("Asia/Seoul"));
+        ZonedDateTime startZoned = requestDto.startAt().atZone(ZoneId.of("Asia/Seoul"));
+        ZonedDateTime endZoned = requestDto.endAt().atZone(ZoneId.of("Asia/Seoul"));
 
-        if (startZoned.equals(endZoned)){
-            // 시작과 끝이 같으면 오류
-            throw new CustomException(ExceptionMessage.RESERVATION_TIME_INVALID);
-        }else if (startZoned.isAfter(endZoned)){
-            // 시작이 끝 보다 늦으면 오류
+        // 현재 시간보다 시작시간이 늦으면 오류 (과거 예약 방지)
+        if (startZoned.isBefore(nowZoned)){
+            throw new CustomException(ExceptionMessage.RESERVATION_INVALID_START_TIME);
+        }
+        // 시작 시간이 종료 시간보다 같거나 늦으면 오류
+        if (startZoned.isBefore(endZoned)){
             throw new CustomException(ExceptionMessage.RESERVATION_START_AFTER_END);
         }
 

@@ -25,8 +25,8 @@ public class JwtAuthFilter extends OncePerRequestFilter {
      * @param request 요청정보
      * @param response 응답정보
      * @param filterChain 필터체인
-     * @throws ServletException 오류처리
-     * @throws IOException 오류처리
+     * @throws ServletException 필터나 서블릿에 오류가 발생
+     * @throws IOException 입출력 오류
      */
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
@@ -42,7 +42,6 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         }
 
         filterChain.doFilter(request, response);
-
     }
 
     /**

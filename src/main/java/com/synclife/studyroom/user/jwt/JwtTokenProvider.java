@@ -64,8 +64,8 @@ public class JwtTokenProvider {
 
     /**
      * 현재 유저의 이름을 반환하는 메서드
-     * @param token
-     * @return
+     * @param token 엑세스 토큰
+     * @return 유저의 이름
      */
     public String getUsername(String token) {
         return jwtService.getUsername(token);
